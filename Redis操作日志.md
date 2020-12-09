@@ -23,3 +23,27 @@ I:\develop\env\Redis-x64-3.2.100>redis-server.exe redis.windows.conf
 [4272] 05 Dec 11:21:49.976 * DB loaded from disk: 0.000 seconds
 [4272] 05 Dec 11:21:49.976 * The server is now ready to accept connections on port 6379
 
+============================================================客户端================================================================
+127.0.0.1:6379> keys *
+1) "k1"
+127.0.0.1:6379> set k2 v2
+OK
+127.0.0.1:6379> dbsize
+(integer) 2
+127.0.0.1:6379> set k3 123456789
+OK
+127.0.0.1:6379> dbsize
+(integer) 3
+127.0.0.1:6379> set k4 aldshasldhofafsabfnaiukdhaosl;dsalindalf;da
+OK
+127.0.0.1:6379> dbsize
+(integer) 4
+127.0.0.1:6379> keys *
+1) "k3"
+2) "k2"
+3) "k4"
+4) "k1"
+127.0.0.1:6379> dbsize
+(integer) 7
+(4.97s)
+
