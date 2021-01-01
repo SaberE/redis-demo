@@ -13,6 +13,26 @@ redis 中文文档地址：http://www.redis.cn/
 
 4、redis五大数据类型：String，List，Set，Hash，Zset。三种特殊数据类型：geospatial，hyperloglogs，Bitmaps。
 
+5、redis事务
+	redis事务没有隔离级别的概念
+	redis单条命令保证原子性，但redis的事务不保证原子性
+	redis的事务处理流程：
+	（1）开启事务（multi）
+	（2）命令入队（.....）	
+	（3）执行事务（exec）
+	redis执行事务时可能出现的异常：
+	（1）入队时命令语法错误，此时事务执行前会被取消，队列里的命令不会被执行
+	（2）事务执行时出现异常，此时会执行队列里所有的命令
 
+6、redis监控
+	（1）悲观锁
+		很悲观，认为什么时候都会出问题，无论做什么都加锁
+	（2）乐观锁（watch）
+		很乐观，认为不会出问题，所以不会上锁！更新时判断数据是否被修改过
+		（1）获取version
+		（2）更新时比较version
+		若有另外一个线程修改了watch监视的值，则事务执行时会返回nil，此时可以先使用unwatch解锁，再重新监视值执行事务（类似自选锁），业务场景：秒杀
 
-
+7、Jedis
+	Jedis描述：Jedis是官方推荐的java连接工具，使用java操作redis的中间件。
+	

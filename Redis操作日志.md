@@ -1109,3 +1109,273 @@ OK
 127.0.0.1:6379> bitcount peter
 (integer) 4
 127.0.0.1:6379>  
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hmset user:1001 name alice age 20 sex woman
+OK
+127.0.0.1:6379> hgetall user1001
+(empty list or set)
+127.0.0.1:6379> hgetaall user:1001
+(error) ERR unknown command 'hgetaall'
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+5) "sex"
+6) "woman"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hexists user:1001 name
+(integer) 1
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+5) "sex"
+6) "woman"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+5) "sex"
+6) "woman"
+127.0.0.1:6379> hdel user:1001 sex
+(integer) 1
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+127.0.0.1:6379> hincrby user:1001 age -1
+(integer) 19
+127.0.0.1:6379> hincrby user:1001 name 1
+(error) ERR hash value is not an integer
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "19"
+127.0.0.1:6379> hincrbyfloat user:1001 age 1.00
+"20"
+127.0.0.1:6379> hincrby key age 0.1
+(error) ERR value is not an integer or out of range
+127.0.0.1:6379> hincrbyfloat user:1001 age 1
+"21"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hkeys user:1001
+1) "name"
+2) "age"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hlen user:1001
+(integer) 2
+127.0.0.1:6379> hlen ksahdk
+(integer) 0
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hmget user:1001 name age
+1) "alice"
+2) "275"
+127.0.0.1:6379> hset user:1001 age 20
+(integer) 0
+127.0.0.1:6379> hget user:1001 aage
+(nil)
+127.0.0.1:6379> hget user:1001 age
+"20"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+127.0.0.1:6379> hsetnx user:1001 sex woman
+(integer) 1
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+5) "sex"
+6) "woman"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hgetall user:1001
+1) "name"
+2) "alice"
+3) "age"
+4) "20"
+5) "sex"
+6) "woman"
+127.0.0.1:6379> hstrlen user:1001 name
+(integer) 5
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hvals user:1001
+1) "alice"
+2) "20"
+3) "woman"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> hscan user:1001 0
+1) "0"
+2) 1) "name"
+   2) "alice"
+   3) "age"
+   4) "20"
+   5) "sex"
+   6) "woman"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> zadd zset1 1 v1 2 v2
+QUEUED
+127.0.0.1:6379> lpush list1 v1 v2
+QUEUED
+127.0.0.1:6379> set k1 v1
+QUEUED
+127.0.0.1:6379> incrby k1 1
+QUEUED
+127.0.0.1:6379> exxec
+(error) ERR unknown command 'exxec'
+127.0.0.1:6379> lrange list1 0 -1
+QUEUED
+127.0.0.1:6379> exec
+(error) EXECABORT Transaction discarded because of previous errors.
+127.0.0.1:6379> lrange list1 0 -1
+(empty list or set)
+127.0.0.1:6379>
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> lpush lsit1 v1 v2
+QUEUED
+127.0.0.1:6379> set k1 v1
+QUEUED
+127.0.0.1:6379> incrby k1 1
+QUEUED
+127.0.0.1:6379> exec
+1) (integer) 2
+2) OK
+3) (error) ERR value is not an integer or out of range
+127.0.0.1:6379> get k1
+"v1"
+127.0.0.1:6379> lrange lsit1 0 -1
+1) "v2"
+2) "v1"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> lpush list1 v1 v2
+QUEUED
+127.0.0.1:6379> set k1 v1
+QUEUED
+127.0.0.1:6379> incrby k1 1
+QUEUED
+127.0.0.1:6379> lpush list1 v3
+QUEUED
+127.0.0.1:6379> exec
+1) (integer) 2
+2) OK
+3) (error) ERR value is not an integer or out of range
+4) (integer) 3
+127.0.0.1:6379> lrange list1 0 -1
+1) "v3"
+2) "v2"
+3) "v1"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379>
+127.0.0.1:6379> set k3 v3
+QUEUED
+127.0.0.1:6379> discard
+OK
+127.0.0.1:6379> get k3
+(nil)
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> set money 1000
+OK
+127.0.0.1:6379> set out 0
+OK
+127.0.0.1:6379> watch money
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> decrby money 20
+QUEUED
+127.0.0.1:6379> incrby out 20
+QUEUED
+127.0.0.1:6379> exec
+1) (integer) 980
+2) (integer) 20
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>另外一个redis连接修改了money的值
+127.0.0.1:6379> watch money
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> decrby money 30
+QUEUED
+127.0.0.1:6379> incrby out 30
+QUEUED
+127.0.0.1:6379> exec
+(nil)
+127.0.0.1:6379> unwatch
+OK
