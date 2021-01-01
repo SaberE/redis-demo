@@ -36,3 +36,97 @@ redis 中文文档地址：http://www.redis.cn/
 7、Jedis
 	Jedis描述：Jedis是官方推荐的java连接工具，使用java操作redis的中间件。
 	
+8、SpringBoot整合redis
+	SpringBoot操作数据：spring-data-jpa、spring-data-jdbc、spring-data-mongodb、spring-data-redis
+	SpringData也是和SpringBoot齐名的项目！
+	说明：在 SpringBoot2.x 之后，原来使用的jedis被替换成了lettuce
+	jedis：采用直连，多线程操作不安全，可以使用jedis连接池 jedis pool连接池（类似BIO模式）	
+	lettue：采用netty，实例可以在多个线程中共享，不存在线程不安全的情况（类似NIO模式）
+	
+	spring-boot-autoconfigure-2.4.1-sources.jar./META-INF/spring.factories	org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+	
+	@Configuration(proxyBeanMethods = false)
+	@ConditionalOnClass(RedisOperations.class)
+	@EnableConfigurationProperties(RedisProperties.class)
+	@Import({ LettuceConnectionConfiguration.class, JedisConnectionConfiguration.class })
+	public class RedisAutoConfiguration {
+
+		@Bean
+		@ConditionalOnMissingBean(name = "redisTemplate")
+		@ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+		public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+			//springboot默认的redisTemplate，没有过多的设置，还需要对对象做序列化处理
+			//springboot默认使用的泛型<Object, Object> ,一般使用<String, Object> 
+			RedisTemplate<Object, Object> template = new RedisTemplate<>();
+			template.setConnectionFactory(redisConnectionFactory);
+			return template;
+		}
+
+		@Bean
+		@ConditionalOnMissingBean
+		@ConditionalOnSingleCandidate(RedisConnectionFactory.class)
+		//由于String经常使用，springboot默认单独建了个实例
+		public StringRedisTemplate stringRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+			StringRedisTemplate template = new StringRedisTemplate();
+			template.setConnectionFactory(redisConnectionFactory);
+			return template;
+		}
+	}
+	
+	//springboot默认使用的JDK序列化JdkSerializationRedisSerializer
+	if (defaultSerializer == null) {
+
+		defaultSerializer = new JdkSerializationRedisSerializer(
+				classLoader != null ? classLoader : this.getClass().getClassLoader());
+	}
+
+	if (enableDefaultSerializer) {
+
+		if (keySerializer == null) {
+			keySerializer = defaultSerializer;
+			defaultUsed = true;
+		}
+		if (valueSerializer == null) {
+			valueSerializer = defaultSerializer;
+			defaultUsed = true;
+		}
+		if (hashKeySerializer == null) {
+			hashKeySerializer = defaultSerializer;
+			defaultUsed = true;
+		}
+		if (hashValueSerializer == null) {
+			hashValueSerializer = defaultSerializer;
+			defaultUsed = true;
+		}
+	}
+	
+	//重新配置序列化模式
+	/**
+	 * redis配置
+	 * @author lgd
+	 *
+	 */
+	@Configuration
+	public class RedisConfig {
+
+		@Bean
+		@Primary
+		public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+			RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+			template.setConnectionFactory(redisConnectionFactory);
+			StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+			Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.setVisibility(PropertyAccessor.ALL, Visibility.ANY);
+			objectMapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
+			jackson2JsonRedisSerializer.setObjectMapper(objectMapper);
+			
+			template.setKeySerializer(stringRedisSerializer);
+			template.setHashKeySerializer(stringRedisSerializer);
+			template.setValueSerializer(jackson2JsonRedisSerializer);
+			template.setHashValueSerializer(jackson2JsonRedisSerializer);
+			template.afterPropertiesSet();
+			return template;
+		}
+		
+	}
