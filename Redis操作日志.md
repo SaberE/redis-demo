@@ -1379,3 +1379,211 @@ QUEUED
 (nil)
 127.0.0.1:6379> unwatch
 OK
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> subscribe channel1 chennel2
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "channel1"
+3) (integer) 1
+1) "subscribe"
+2) "chennel2"
+
+127.0.0.1:6380> publish channel1 hello!
+(integer) 1
+127.0.0.1:6380>
+3) (integer) 2
+
+127.0.0.1:6379> 
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "channel1"
+3) (integer) 1
+1) "subscribe"
+2) "chennel2"
+3) (integer) 2
+1) "message"
+2) "channel1"
+3) "hello!"
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> info replication
+# Replication
+role:master
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+
+127.0.0.1:6380> info replication
+# Replication
+role:master
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+127.0.0.1:6380> slaveof 127.0.0.1 6379
+OK
+127.0.0.1:6380> infp replication
+(error) ERR unknown command 'infp'
+127.0.0.1:6380> info replication
+# Replication
+role:slave
+master_host:127.0.0.1
+master_port:6379
+master_link_status:down
+master_last_io_seconds_ago:-1
+master_sync_in_progress:0
+slave_repl_offset:1
+master_link_down_since_seconds:jd
+slave_priority:100
+slave_read_only:1
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+127.0.0.1:6380>
+
+127.0.0.1:6381> info replication
+# Replication
+role:master
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+127.0.0.1:6381> slaveof localhost 6380
+OK
+127.0.0.1:6381> info replciation
+127.0.0.1:6381> info replication
+# Replication
+role:slave
+master_host:localhost
+master_port:6380
+master_link_status:down
+master_last_io_seconds_ago:-1
+master_sync_in_progress:0
+slave_repl_offset:1
+master_link_down_since_seconds:jd
+slave_priority:100
+slave_read_only:1
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+
+127.0.0.1:6379>
+127.0.0.1:6379>
+127.0.0.1:6379> info repliction
+127.0.0.1:6379> info replication
+# Replication
+role:master
+connected_slaves:1
+slave0:ip=127.0.0.1,port=6380,state=online,offset=603,lag=1
+master_repl_offset:603
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:2
+repl_backlog_histlen:602
+127.0.0.1:6379>
+
+127.0.0.1:6380>
+127.0.0.1:6380>
+127.0.0.1:6380> info replication
+# Replication
+role:slave
+master_host:127.0.0.1
+master_port:6379
+master_link_status:up
+master_last_io_seconds_ago:1
+master_sync_in_progress:0
+slave_repl_offset:631
+slave_priority:100
+slave_read_only:1
+connected_slaves:1
+slave0:ip=127.0.0.1,port=6381,state=online,offset=85,lag=0
+master_repl_offset:99
+repl_backlog_active:1
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:2
+repl_backlog_histle
+
+127.0.0.1:6381>
+127.0.0.1:6381>
+127.0.0.1:6381> info replication
+# Replication
+role:slave
+master_host:127.0.0.1
+master_port:6380
+master_link_status:up
+master_last_io_seconds_ago:3
+master_sync_in_progress:0
+slave_repl_offset:127
+slave_priority:100
+slave_read_only:1
+connected_slaves:0
+master_repl_offset:0
+repl_backlog_active:0
+repl_backlog_size:1048576
+repl_backlog_first_byte_offset:0
+repl_backlog_histlen:0
+127.0.0.1:6381>
+
+127.0.0.1:6379> set k11 11
+OK
+127.0.0.1:6379> get k11
+"11"
+
+127.0.0.1:6380> get k11
+"11"
+127.0.0.1:6380>
+
+127.0.0.1:6381> get k11
+"11"
+127.0.0.1:6381>
+
+127.0.0.1:6380> set k11 111
+(error) READONLY You can't write against a read only slave.
+
+127.0.0.1:6379> shutdown
+not connected>
+not connected> ^C
+I:\develop\env\Redis-x64-3.2.100>redis-cli
+Could not connect to Redis at 127.0.0.1:6379: 由于目标计算机积极拒绝，无法连接。
+Could not connect to Redis at 127.0.0.1:6379: 由于目标计算机积极拒绝，无法连接。
+not connected>
+
+127.0.0.1:6380> get k11
+"11"
+
+127.0.0.1:6381> get k11
+"11"
+
+127.0.0.1:6380> set k12 12
+(error) READONLY You can't write against a read only slave.
+
+I:\develop\env\Redis-x64-3.2.100>redis-cli
+127.0.0.1:6379> get k11
+"11"
+
+127.0.0.1:6379> set k12 12
+OK
+
+127.0.0.1:6380> get k12
+"12"
+
+
+
+
+

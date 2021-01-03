@@ -130,3 +130,32 @@ redis 中文文档地址：http://www.redis.cn/
 		}
 		
 	}
+	
+
+9、redis发布订阅
+	//订阅频道
+	subscribe channel [chnnel...]
+	//向指定频道推送消息
+	publish channel message
+	//取消订阅
+	unsbscribe  unsubscribe [channel [channel ...]]
+	
+10、redis主从复制
+	主机负责写，从机负责读。
+	一个主机可拥有多个从机，一个从机只能有一个主机。
+	redis默认都是主机，所以只要在从机中配置主机信息。
+	使用info replication命令查看redis服务信息
+	127.0.0.1:6379> info replication
+	# Replication
+	role:master
+	connected_slaves:0
+	master_repl_offset:0
+	repl_backlog_active:0
+	repl_backlog_size:1048576
+	repl_backlog_first_byte_offset:0
+	repl_backlog_histlen:0
+	127.0.0.1:6379>
+
+
+	
+	
